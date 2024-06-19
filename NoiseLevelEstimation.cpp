@@ -72,7 +72,7 @@ void NoiseLevelEstimation::img2patch(int d, int step)
 	int patchSize = d * d;
 	
 	if (mPatches.empty()) mPatches.create(patchSize, numPatches, CV_32FC1);
-	if (mPatchPixelsOffset.size() == 0)
+	if (mPatchPixelsOffset.empty())
 	{
 		mPatchPixelsOffset.resize(patchSize);
 		int k = 0;
@@ -85,7 +85,7 @@ void NoiseLevelEstimation::img2patch(int d, int step)
 			}
 		}
 	}
-	if (mPatchesPtrOffset.size() == 0)
+	if (mPatchesPtrOffset.empty())
 	{
 		mPatchesPtrOffset.resize(numPatches);
 		int k = 0;
@@ -98,7 +98,7 @@ void NoiseLevelEstimation::img2patch(int d, int step)
 			}
 		}
 	}
-	if (mPatchesColPixelsOffset.size() == 0)
+	if (mPatchesColPixelsOffset.empty())
 	{
 		mPatchesColPixelsOffset.resize(patchSize);
 		for (int i = 0; i < patchSize; i++)
