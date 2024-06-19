@@ -21,21 +21,14 @@ void NoiseLevelEstimation::estimateNoiseLevel(const cv::Mat& src, float& noiseLe
 
 	img2patch(d, step);
 
-	if (mRowMeans.empty()) mRowMeans.create(patchSize, 1, CV_32FC1);
 	if (mX.empty()) mX.create(mPatches.size(), CV_32FC1);
 	for (int row = 0; row < mPatches.rows; row++)
 	{
-		float* pRowMeans = mRowMeans.ptr<float>(row);
-		*pRowMeans = cv::mean(mPatches.row(row))[0];
-		mX.row(row) = mPatches.row(row) - *pRowMeans;
+		float curRowMeans = cv::mean(mPatches.row(row))[0];
+		mX.row(row) = mPatches.row(row) - curRowMeans;
 	}
 	mSigmaX = mX * mX.t() / numPatches;
 	cv::eigen(mSigmaX, mEigenValues);
-	cv::Mat mmPatches = mPatches;
-	cv::Mat eigenValues = mEigenValues;
-	cv::Mat mmRowMeans = mRowMeans;
-	cv::Mat mmX = mX;
-	cv::Mat mmSigmaX = mSigmaX;
 	
 	float* pEigenValues = mEigenValues.ptr<float>(0);
 	for (int i = 1; i < mEigenValues.total(); i++)
