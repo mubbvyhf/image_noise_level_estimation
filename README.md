@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repository is a non-official implementation of the following paper:
+This repository is a non-official C++ implementation of the following paper:
 
 Chen G , Zhu F , Heng P A . An Efficient Statistical Method for Image Noise Level Estimation[C]// 2015 IEEE International Conference on Computer Vision (ICCV). IEEE Computer Society, 2015.
 
