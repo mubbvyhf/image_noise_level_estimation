@@ -14,10 +14,7 @@ NoiseLevelEstimation::~NoiseLevelEstimation()
 
 void NoiseLevelEstimation::estimateNoiseLevel(const cv::Mat& src, float& noiseLevel)
 {
-	if (src.type() == CV_8UC1)
-		src.convertTo(mSrcFloat, CV_32FC1, 1.f / 255.f);
-	else if (src.type() == CV_16UC1)
-		src.convertTo(mSrcFloat, CV_32FC1, 1.f / 16383.f);
+	src.convertTo(mSrcFloat, CV_32FC1, 1.f / 255.f);
 
 	img2patch(d, step);
 
@@ -52,10 +49,7 @@ void NoiseLevelEstimation::estimateNoiseLevel(const cv::Mat& src, float& noiseLe
 		if (nLarger == nSmaller)
 		{
 			noiseLevel = sqrt(mean);
-			if (src.type() == CV_8UC1)
-				noiseLevel *= 255.f;
-			else if (src.type() == CV_16UC1)
-				noiseLevel *= 16383.f;
+			noiseLevel *= 255.f;
 			return;
 		}
 	}
