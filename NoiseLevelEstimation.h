@@ -17,7 +17,7 @@ private:
 	int d;
 	int step;
 	int patchSize;
-	int numPatches;
+
 	std::vector<int> mPatchesPtrOffset;
 	std::vector<int> mPatchPixelsOffset;
 	std::vector<int> mPatchesColPixelsOffset;
