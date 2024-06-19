@@ -2,8 +2,8 @@
 
 NoiseLevelEstimation::NoiseLevelEstimation()
 {
-	d = 4;
-	step = 15;
+	d = 8;
+	step = 3;
 	patchSize = d * d;
 }
 
@@ -14,17 +14,20 @@ NoiseLevelEstimation::~NoiseLevelEstimation()
 
 void NoiseLevelEstimation::estimateNoiseLevel(const cv::Mat& src, float& noiseLevel)
 {
-	src.convertTo(mSrcFloat, CV_32FC1, 1.f / 255.f);
+	if (src.type() == CV_8UC1)
+		src.convertTo(mSrcFloat, CV_32FC1, 1.f / 255.f);
+	else if (src.type() == CV_16UC1)
+		src.convertTo(mSrcFloat, CV_32FC1, 1.f / 16383.f);
 
 	img2patch(d, step);
 
 	if (mX.empty()) mX.create(mPatches.size(), CV_32FC1);
 	for (int row = 0; row < mPatches.rows; row++)
 	{
-		float curRowMeans = cv::mean(mPatches.row(row))[0];
-		mX.row(row) = mPatches.row(row) - curRowMeans;
+		float curRowMean = cv::mean(mPatches.row(row))[0];
+		mX.row(row) = mPatches.row(row) - curRowMean;
 	}
-	mSigmaX = mX * mX.t() / numPatches;
+	mSigmaX = mX * mX.t() / mPatches.cols;
 	cv::eigen(mSigmaX, mEigenValues);
 	
 	float* pEigenValues = mEigenValues.ptr<float>(0);
@@ -49,7 +52,10 @@ void NoiseLevelEstimation::estimateNoiseLevel(const cv::Mat& src, float& noiseLe
 		if (nLarger == nSmaller)
 		{
 			noiseLevel = sqrt(mean);
-			noiseLevel *= 255.f;
+			if (src.type() == CV_8UC1)
+				noiseLevel *= 255.f;
+			else if (src.type() == CV_16UC1)
+				noiseLevel *= 16383.f;
 			return;
 		}
 	}
@@ -62,7 +68,7 @@ void NoiseLevelEstimation::img2patch(int d, int step)
 
 	int numPatchesX = (width + step - d) / step;
 	int numPatchesY = (height + step - d) / step;
-	numPatches = numPatchesX * numPatchesY;
+	int numPatches = numPatchesX * numPatchesY;
 	int patchSize = d * d;
 	
 	if (mPatches.empty()) mPatches.create(patchSize, numPatches, CV_32FC1);
